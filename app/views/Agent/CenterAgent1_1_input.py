@@ -33,11 +33,11 @@ my interest and requirement. You should use tools and the template that I will g
 Here is my idea:{messages};
 Notice, you may encounter those situations:
 1. Greeting or other everyday conversation: You should respond politely and briefly, steer the conversation to travel plans, and ask me about their specific needs.
-2. My demand description is not clear: Before you generate the plan, you should first ask the user's trip date and days, if I do not tell you, you should try to ask first rather than directly generate the plan. But if I am not clear, you can generate suggestions.
+2. My demand description is not clear: Before you generate the plan, you should first ask the user's trip date and days, if I do not tell you, you should try to ask first rather than directly generate the plan. But if I am not clear, you can just generate suggestions.
 3. Be asked for planning suggestions: Once you have enough information, you can go straight to the tools and templates.
 
 if you encounter Situation3, The FIRST line of your OUTPUT must annotate "situation 3" and then respond in the language of Chinese, 
-your planning suggestions should be based on this template, in the format of MARKDOWN, in the language of Chinese:
+your planning suggestions should be only based on this template(no more conversation),in the language of Chinese:
 "Situation3
 # (Title)
 ---
@@ -58,10 +58,24 @@ And any other request is NOT allowable, give me tender warning if I do so.
 
 # Choose the LLM that will drive the agent
 llm = ChatOpenAI(model="gpt-4-turbo-preview")
-
+# add memory
+from langchain_core.chat_history import InMemoryChatMessageHistory
+from langchain_core.runnables.history import RunnableWithMessageHistory
+memory = InMemoryChatMessageHistory(session_id="test-session")
 
 agent_executor = create_react_agent(llm, tools, state_modifier=SystemPrompt)
 # SystemPrompt.pretty_print()
+
+agent_with_chat_history = RunnableWithMessageHistory(
+    agent_executor,
+    # This is needed because in most real world scenarios, a session id is needed
+    # It isn't really used here because we are using a simple in memory ChatMessageHistory
+    lambda session_id: memory,
+    input_messages_key="input",
+    history_messages_key="chat_history",
+)
+
+config = {"configurable": {"session_id": "test-session"}}
 
 
 def generate_travel_plan(user_input):
@@ -73,14 +87,15 @@ def generate_travel_plan(user_input):
     """
     try:
         # 调用 agent_executor，并传入用户输入的需求
+        result = agent_with_chat_history.invoke(
+            {"input": user_input}, config
+        )["output"]
+
         # result = agent_executor.invoke({
         #     "messages": [("user", user_input)],  # 传递用户输入
         # })
-        result = agent_executor.invoke({
-            "messages": [("user", user_input)],  # 传递用户输入
-        })
-        #"output": messages["messages"][-1].content
-        return result["messages"][-1].content  # 返回生成的结果
+        return result
+        # return result["messages"][-1].content  # 返回生成的结果
     except Exception as e:
         # 处理异常并返回错误信息
         print(user_input)

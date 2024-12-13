@@ -2,12 +2,12 @@
 
 import os
 
-
 def generate_main_md(user_id, result):
-    # Check if the first line of result is "Situation3"
-    if result.splitlines()[0] != "Situation3":
+    # Check if the first line of result is "Situation3" or "情况3"
+    first_line = result.splitlines()[0]
+    if first_line != "Situation3" and first_line != "情况3":
         # If not, return None (do not generate the markdown file)
-        return None
+        return None, None  # 返回 None 和标题
 
     # Define the path where the markdown file will be saved
     file_path = f"./generated_plans/{user_id}/main_plan.md"
@@ -15,14 +15,25 @@ def generate_main_md(user_id, result):
     # Ensure the directory exists
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
-    # Remove the first line ("Situation3") and join the rest of the content
-    content_to_write = "\n".join(result.splitlines()[1:])
+    lines = result.splitlines()
+    if len(lines) > 1:
+        title_line = lines[1]  # 第二行作为标题
+        # Remove leading "#" and any spaces from the title
+        title = title_line.lstrip("#").strip()  # 去除 "#" 和空格
+    else:
+        title = ""  # 如果没有第二行标题，返回空字符串
+
+    # Remove the first line ("Situation3" or "情况3") and join the rest of the content
+    content_to_write = "\n".join(lines[1:])
 
     # Write the content to the markdown file (starting from the second line)
     with open(file_path, 'w', encoding='utf-8') as f:
         f.write(content_to_write)
 
-    return file_path
+    return file_path, title  # 返回文件路径和标题
+
+
+
 
 
 def generate_daily_md(user_id, result):

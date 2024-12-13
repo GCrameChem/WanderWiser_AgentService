@@ -1,5 +1,13 @@
 from flask import Blueprint, jsonify, request,send_file
 import os
+from dotenv import load_dotenv
+
+# 加载环境变量 (如果你使用 .env 文件来设置环境变量)
+load_dotenv()
+
+# 获取环境变量
+DOWNLOAD_FILE_PATH = os.environ.get('DOWNLOAD_FILE_PATH', 'http://default_path')
+
 
 # from app.views.Agent.CenterAgent1_1_cmd import user_input
 
@@ -48,12 +56,13 @@ def agent_request():
         print(result)
 
         # 生成概要计划并返回文件路径
-        file_path = generate_main_md(user_id, result)
+        file_path, title = generate_main_md(user_id, result)
         print(file_path)
         # 如果 result 包含 URL，返回 URL；否则返回空
         if file_path:
-            file_url = f"./generated_plans/{user_id}/main_plan.md"  # 假设你的服务器提供该文件的 URL 路径
-            return jsonify({'file_url': file_url,'output':result})
+            file_url = f"./{user_id}/main_plan.md"
+            # 假设你的服务器提供该文件的 URL 路径
+            return jsonify({'file_url': file_url,'output':title})
         else:
             # 如果不需要生成文件，返回空 URL 或其他合适的响应
             return jsonify({'file_url': None,'output':result})
@@ -62,17 +71,24 @@ def agent_request():
         return jsonify({'error': str(e)}), 500
 
 
-# 假设存在一个路由用来处理文件下载
-@agent_route.route('/download/<filename>', methods=['GET'])
-def download_file(filename):
-    file_path = os.path.join('./generated_plans', filename)
+# 处理文件下载
+@agent_route.route('/download/<path:file_url>', methods=['GET'])
+def download_file(file_url):
+    # 拼接文件的本地路径
+    file_path = os.path.join('./generated_plans', file_url.replace('\\', '/'))  # 使用 os.path.join 来拼接文件路径
+    print(f"Resolved file path: {file_path}")
+
+    # 检查文件是否存在
     if os.path.exists(file_path):
-        return send_file(file_path, as_attachment=True, download_name=filename)
+        # 构建下载链接，确保 URL 路径格式正确
+        download_url = f"{DOWNLOAD_FILE_PATH}/{file_url.replace('\\', '/')}"
+        print(f"Download URL: {download_url}")
+
+        # 返回下载链接作为响应
+        return jsonify({'download_url': download_url})
     else:
+        # 如果文件不存在，返回 404 错误
         return jsonify({'error': 'File not found.'}), 404
-
-
-
 
 '''
 {
