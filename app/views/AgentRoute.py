@@ -72,7 +72,7 @@ def agent_request():
 
 
 # 处理文件下载
-@agent_route.route('/download/<path:file_url>', methods=['GET'])
+@agent_route.route('/download/main_plan', methods=['GET'])
 def download_file(file_url):
     # 拼接文件的本地路径
     file_path = os.path.join('./generated_plans', file_url.replace('\\', '/'))  # 使用 os.path.join 来拼接文件路径
