@@ -60,7 +60,7 @@ def agent_request():
         print(file_path)
         # 如果 result 包含 URL，返回 URL；否则返回空
         if file_path:
-            file_url = f"./{user_id}/main_plan.md"
+            file_url = f"{user_id}/main_plan.md"
             # 假设你的服务器提供该文件的 URL 路径
             return jsonify({'file_url': file_url,'output':title})
         else:
@@ -73,8 +73,13 @@ def agent_request():
 
 # 处理文件下载
 @agent_route.route('/download/main_plan', methods=['GET'])
-def download_file(file_url):
+def download_file():
     # 拼接文件的本地路径
+    data = request.json
+    if not data or 'file_url' not in data:
+        return jsonify({'error': 'Invalid input, "file_url" are required.'}), 400
+
+    file_url = data['file_url']
     file_path = os.path.join('./generated_plans', file_url.replace('\\', '/'))  # 使用 os.path.join 来拼接文件路径
     print(f"Resolved file path: {file_path}")
 
