@@ -1,0 +1,9 @@
+{
+    "name": "ww_agent",
+    "cwd": "/home/project/wanderwiser/WanderWiser_AgentService",
+    "script": "/home/project/wanderwiser/WanderWiser_AgentService/run.py",
+    "interpreter": "/home/project/wanderwiser/WanderWiser_AgentService/venv/bin/python.exe",
+    "out_file": "/home/project/wanderwiser/WanderWiser_AgentService/pm2_management/outlog.log",
+    "error_file": "/home/project/wanderwiser/WanderWiser_AgentService/pm2_management/error.log",
+    "autorestart" : false
+}
