@@ -4,10 +4,14 @@ from flask_mysqldb import MySQL
 import os
 from dotenv import load_dotenv
 import sys
+import subprocess
 from app import create_app
 
 # Add the myapp directory to sys.path (use absolute path)
 sys.path.append(os.path.join(os.path.dirname(__file__), 'app'))
+
+# 启动 FastAPI 服务
+subprocess.Popen(["python", "services/langserve_service.py"])
 
 app = create_app()
 if __name__ == "__main__":

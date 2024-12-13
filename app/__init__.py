@@ -5,35 +5,33 @@ from flask_mysqldb import MySQL
 from flask_cors import CORS
 import os
 from dotenv import load_dotenv
-import sys
-from app.routes import routes
-
+from config.mysql_config import MYSQL_CONFIG
 
 load_dotenv()  # 加载环境变量
-
-# Add the myapp directory to sys.path
-# Add the myapp directory to sys.path
-sys.path.append(os.path.join(os.path.dirname(__file__), 'app'))
-
 
 def create_app():
     app = Flask(__name__)
 
-    # Configure MySQL
-    app.config.from_mapping(
-        SECRET_KEY='dev',
-        MYSQL_HOST=os.getenv('MYSQL_HOST'),
-        MYSQL_USER=os.getenv('MYSQL_USER'),
-        MYSQL_PASSWORD=os.getenv('MYSQL_PASSWORD'),
-        MYSQL_DB=os.getenv('MYSQL_DB'),
-    )
+    # 导入MySQL配置
+    # app.config['SECRET_KEY'] = 'your-secret-key'
+    app.config['MYSQL_HOST'] = MYSQL_CONFIG['host']
+    app.config['MYSQL_USER'] = MYSQL_CONFIG['user']
+    app.config['MYSQL_PASSWORD'] = MYSQL_CONFIG['password']
+    app.config['MYSQL_DB'] = MYSQL_CONFIG['db']
 
+    # 初始化 MySQL
     mysql = MySQL(app)
 
-    # 注册 Blueprint
-    app.register_blueprint(routes)
-    # 启用跨域请求支持
+    # 在此处注册路由
+    with app.app_context():
+        from app.routes import register_agent_routes
+        register_agent_routes(app)
+
+        from app.routes import register_test_routes
+        register_test_routes(app)
+
+    # 启用跨域支持x
     CORS(app)
 
-
     return app
+

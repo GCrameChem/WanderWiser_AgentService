@@ -1,6 +1,6 @@
 # 运行 Agent 的主逻辑
 # 检测输入
-def run_agent(user_input):
+def echo_input(user_input):
     # 假设这是 Agent 的核心处理逻辑
     # 你可以根据需要修改逻辑
     result = f"Agent received: {user_input}"

@@ -13,4 +13,4 @@ def convert_ipynb_to_py(ipynb_file, py_file):
                 f.write(''.join(cell['source']) + '\n\n')
 
 
-convert_ipynb_to_py('agent1.ipynb', 'CenterAgent_main.py')
+convert_ipynb_to_py('agent1_1.ipynb', 'app/views/Agent/CenterAgent1_1_main.py')
