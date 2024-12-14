@@ -1,4 +1,5 @@
-from flask import Blueprint, jsonify, request,send_file
+# app/views/AgentRoute.py
+from flask import Blueprint, jsonify, request,send_file,send_from_directory
 import os
 from dotenv import load_dotenv
 
@@ -72,30 +73,34 @@ def agent_request():
         return jsonify({'error': str(e)}), 500
 
 
-# 处理文件下载
+# 获取环境变量 STATIC_FOLDER
+STATIC_FOLDER = os.environ.get('STATIC_FOLDER')
+
+# 处理文件下载，统一调用下载文件逻辑
 @agent_route.route('/download/main_plan', methods=['POST'])
-def download_file():
-    # 拼接文件的本地路径
+def download_main_plan():
+    # 获取传入的 file_url
     data = request.json
     if not data or 'file_url' not in data:
-        return jsonify({'error': 'Invalid input, "file_url" are required.'}), 400
+        return jsonify({'error': 'Invalid input, "file_url" is required.'}), 400
 
     file_url = data['file_url']
-    print(file_url)
-    file_path = os.path.join('./generated_plans', file_url.replace('\\', '/'))  # 使用 os.path.join 来拼接文件路径
+    print(f"Received file URL: {file_url}")
+
+    # 拼接文件的绝对路径
+    file_path = os.path.join(STATIC_FOLDER, file_url.replace('\\', '/'))
     print(f"Resolved file path: {file_path}")
 
     # 检查文件是否存在
     if os.path.exists(file_path):
-        # 构建下载链接，确保 URL 路径格式正确
-        download_url = f"{DOWNLOAD_FILE_PATH}/{file_url.replace('\\', '/')}"
+        # 构建完整的下载 URL
+        download_url = f"http://heywanderwiser.com/generated_plans/{file_url.replace('\\', '/')}"
         print(f"Download URL: {download_url}")
-        # 确保文件存在
-        if os.path.exists(download_url):
-            # 使用 send_file 或 send_from_directory 提供文件
-            return send_file(download_url, as_attachment=True)
-        else:
-            return jsonify({"error": "File not found"}), 404
+
+        # 使用 send_from_directory 发送文件
+        return send_from_directory(STATIC_FOLDER, file_url.replace('\\', '/'), as_attachment=True)
+    else:
+        return jsonify({"error": "File not found"}), 404
 
 
 '''
