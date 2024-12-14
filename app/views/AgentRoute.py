@@ -73,7 +73,7 @@ def agent_request():
 
 
 # 处理文件下载
-@agent_route.route('/download/main_plan', methods=['GET'])
+@agent_route.route('/download/main_plan', methods=['POST'])
 def download_file():
     # 拼接文件的本地路径
     data = request.json
@@ -90,12 +90,13 @@ def download_file():
         # 构建下载链接，确保 URL 路径格式正确
         download_url = f"{DOWNLOAD_FILE_PATH}/{file_url.replace('\\', '/')}"
         print(f"Download URL: {download_url}")
+        # 确保文件存在
+        if os.path.exists(download_url):
+            # 使用 send_file 或 send_from_directory 提供文件
+            return send_file(download_url, as_attachment=True)
+        else:
+            return jsonify({"error": "File not found"}), 404
 
-        # 返回下载链接作为响应
-        return jsonify({'download_url': download_url})
-    else:
-        # 如果文件不存在，返回 404 错误
-        return jsonify({'error': 'File not found.'}), 404
 
 '''
 {

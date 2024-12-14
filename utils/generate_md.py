@@ -5,7 +5,7 @@ import os
 def generate_main_md(user_id, result):
     # Check if the first line of result is "Situation3" or "情况3"
     first_line = result.splitlines()[0]
-    if first_line != "Situation3" and first_line != "情况3":
+    if first_line not in ["Situation3", "情况3", "Situation 3", "情况 3", "situation3", "situation 3"]:
         # If not, return None (do not generate the markdown file)
         return None, None  # 返回 None 和标题
 
