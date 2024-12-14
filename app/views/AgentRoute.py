@@ -77,8 +77,8 @@ def agent_request():
 STATIC_FOLDER = os.environ.get('STATIC_FOLDER')
 
 # 处理文件下载，统一调用下载文件逻辑
-@agent_route.route('/download/main_plan', methods=['POST'])
-def download_main_plan():
+@agent_route.route('/download/main_plan1', methods=['POST'])
+def download_main_plan1():
     # 获取传入的 file_url
     data = request.json
     if not data or 'file_url' not in data:
@@ -99,6 +99,35 @@ def download_main_plan():
 
         # 使用 send_from_directory 发送文件
         return send_from_directory(STATIC_FOLDER, file_url.replace('\\', '/'), as_attachment=True)
+    else:
+        return jsonify({"error": "File not found"}), 404
+
+# 处理文件下载，统一调用下载文件逻辑
+@agent_route.route('/download/main_plan', methods=['POST'])
+def download_main_plan():
+    # 获取传入的 file_url
+    data = request.json
+    if not data or 'file_url' not in data:
+        return jsonify({'error': 'Invalid input, "file_url" is required.'}), 400
+
+    file_url = data['file_url']
+    print(f"Received file URL: {file_url}")
+
+    # 拼接文件的绝对路径
+    file_path = os.path.join(STATIC_FOLDER, file_url.replace('\\', '/'))
+    print(f"Resolved file path: {file_path}")
+
+    # 检查文件是否存在
+    if os.path.exists(file_path):
+        # 打开文件并读取其内容
+        with open(file_path, 'r', encoding='utf-8') as file:
+            file_content = file.read()
+
+        # 返回文件内容作为纯文本
+        return jsonify({
+            "file_content": file_content
+        })
+
     else:
         return jsonify({"error": "File not found"}), 404
 
