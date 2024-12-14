@@ -30,6 +30,9 @@ def create_app():
         from app.routes import register_test_routes
         register_test_routes(app)
 
+        from app.routes import register_saveDB_routes
+        register_saveDB_routes(app)
+
     # 启用跨域支持x
     CORS(app)
 

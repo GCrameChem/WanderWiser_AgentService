@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from app.views.AgentRoute import agent_route
 from app.test.TestRoute import test_route
+from app.views.saveDBRoute import saveDB_route
 import requests
 
 routes = Blueprint('routes', __name__)
@@ -12,3 +13,7 @@ def register_test_routes(app):
 def register_agent_routes(app):
     # 注册 Agent 服务的路由
     app.register_blueprint(agent_route, url_prefix='/agent')
+
+def register_saveDB_routes(app):
+    # 注册 Agent 服务的路由
+    app.register_blueprint(saveDB_route, url_prefix='/saveDB')

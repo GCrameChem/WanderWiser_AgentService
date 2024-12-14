@@ -30,7 +30,7 @@ def process_agent_request():
 
 
 # 生成概要计划
-from app.views.Agent.CenterAgent1_1_input import agent_executor
+from app.views.Agent.CenterAgent1_1_input import generate_travel_plan
 from utils.generate_md import generate_main_md, generate_daily_md
 from langchain_core.output_parsers import StrOutputParser
 
@@ -45,14 +45,15 @@ def agent_request():
     user_id = data['user_id']
 
     try:
-        print("request OK")
+        print(user_input)
+        print(user_id)
         # 这里假设获取 agent 执行的结果
-
-        result1 = agent_executor.invoke({
-            "messages": [("user", user_input)],  # 传递用户输入
-        })
+        result = generate_travel_plan(user_id, user_input)
+        # result1 = agent_executor.invoke({
+        #     "messages": [("user", user_input)],  # 传递用户输入
+        # })
         # "output": messages["messages"][-1].content
-        result = result1["messages"][-1].content  # 返回生成的结果
+        # result = result1["messages"][-1].content  # 返回生成的结果
         print(result)
 
         # 生成概要计划并返回文件路径
@@ -80,6 +81,7 @@ def download_file():
         return jsonify({'error': 'Invalid input, "file_url" are required.'}), 400
 
     file_url = data['file_url']
+    print(file_url)
     file_path = os.path.join('./generated_plans', file_url.replace('\\', '/'))  # 使用 os.path.join 来拼接文件路径
     print(f"Resolved file path: {file_path}")
 
