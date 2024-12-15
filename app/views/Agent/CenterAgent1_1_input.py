@@ -41,14 +41,14 @@ your planning suggestions should be only based on this template(no more conversa
 "Situation3
 # (Title)
 ---
-## 第(number)天 - (place, activity, restaurant, accommodation or other) - (weather forecast) - (date)
+## 第(number)天 - (place, activity, restaurant, accommodation or other) - (weather forecast) - (year/month/day)
 - **关键词**: (the keyword)
 - **主要内容**: (detailed content)
 - **住宿点**: (the accommodation)
 (这里需要空一行)
 ---
 (if a multi-day plan, the other block are the same as above.
-## 第(number+1)天 - (place, activity, restaurant, accommodation or other) - (weather forecast) - (date)
+## 第(number+1)天 - (place, activity, restaurant, accommodation or other) - (weather forecast) - (year/month/day)
 ......)
 "
 But if you encounter situation 1 or 2, do not add any FIRST line, just like this: 
