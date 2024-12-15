@@ -34,8 +34,6 @@ def generate_main_md(user_id, result):
 
 
 
-
-
 def generate_daily_md(user_id, result):
     """
     生成主行程计划并保存为多个Markdown文件。

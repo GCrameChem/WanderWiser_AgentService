@@ -42,9 +42,10 @@ your planning suggestions should be only based on this template(no more conversa
 # (Title)
 ---
 ## 第(number)天 - (place, activity, restaurant, accommodation or other) - (weather forecast) - (date)
-- **(keyword)**: (the content)
-- **(main content)**: (detailed content)
-- **(the accommodation)**: (detailed content)
+- **关键词**: (the keyword)
+- **主要内容**: (detailed content)
+- **住宿点**: (the accommodation)
+(这里需要空一行)
 ---
 (if a multi-day plan, the other block are the same as above.
 ## 第(number+1)天 - (place, activity, restaurant, accommodation or other) - (weather forecast) - (date)
